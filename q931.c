@@ -2196,17 +2196,33 @@ static int transmit_subaddr_helper(int full_ie, struct pri *ctrl, struct q931_pa
 
 static int receive_subaddr_helper(int full_ie, struct pri *ctrl, struct q931_party_subaddress *q931_subaddress, int msgtype, q931_ie *ie, int offset, int len)
 {
+	int i = -1;
+
 	if (len <= 0) {
 		return -1;
 	}
 
+	/*
+	 * To follow Q.931 (4.5.1), we must search for start of octet 4 by
+	 * walking through all bytes until one with ext bit (8) set to 1
+	 */
+	do {
+		++i;
+		switch (i) {
+		case 0:	/* Octet 3 */
+			/* type: 0 = NSAP, 2 = User Specified */
+			q931_subaddress->type = ((ie->data[0] & 0x70) >> 4);
+			q931_subaddress->odd_even_indicator = (ie->data[0] & 0x08) ? 1 : 0;
+			break;
+		default: /* Octet 3* extra */
+			break;
+		}
+	} while (!(ie->data[i] & 0x80) && len - i);
+
 	q931_subaddress->valid = 1;
-	q931_subaddress->length = len;
-	/* type: 0 = NSAP, 2 = User Specified */
-	q931_subaddress->type = ((ie->data[0] & 0x70) >> 4);
-	q931_subaddress->odd_even_indicator = (ie->data[0] & 0x08) ? 1 : 0;
+	q931_subaddress->length = len - i;
 	q931_memget(q931_subaddress->data, sizeof(q931_subaddress->data),
-		ie->data + offset, len);
+		ie->data + offset + i, len - i);
 
 	return 0;
 }
@@ -2214,13 +2230,22 @@ static int receive_subaddr_helper(int full_ie, struct pri *ctrl, struct q931_par
 static void dump_subaddr_helper(int full_ie, struct pri *ctrl, q931_ie *ie, int offset, int len, int datalen, char prefix)
 {
 	unsigned char cnum[256];
+	int i = -1;
+
+	/*
+	 * To follow Q.931 (4.5.1), we must search for start of octet 4 by
+	 * walking through all bytes until one with ext bit (8) set to 1
+	 */
+	do {
+		++i;
+	} while (!(ie->data[i] & 0x80) && datalen - i);
 
 	if (!(ie->data[0] & 0x70)) {
 		/* NSAP  Get it as a string for dump display purposes only. */
-		q931_strget(cnum, sizeof(cnum), ie->data + offset, datalen);
+		q931_strget(cnum, sizeof(cnum), ie->data + offset + i, datalen - i);
 	} else {
 		/* User Specified */
-		q931_get_subaddr_specific(cnum, sizeof(cnum), ie->data + offset, datalen,
+		q931_get_subaddr_specific(cnum, sizeof(cnum), ie->data + offset + i, datalen - i,
 			ie->data[0] & 0x08);
 	}
 
