@@ -27,6 +27,8 @@
 CC=gcc
 GREP=grep
 AWK=awk
+AR=ar
+RANLIB=ranlib
 
 OSARCH=$(shell uname -s)
 PROC?=$(shell uname -m)
@@ -193,8 +195,8 @@ MAKE_DEPS= -MD -MT $@ -MF .$(subst /,_,$@).d -MP
 	$(CC) $(CFLAGS) $(MAKE_DEPS) -c -o $@ $<
 
 $(STATIC_LIBRARY): $(STATIC_OBJS)
-	ar rcs $(STATIC_LIBRARY) $(STATIC_OBJS)
-	ranlib $(STATIC_LIBRARY)
+	$(AR) rcs $(STATIC_LIBRARY) $(STATIC_OBJS)
+	$(RANLIB) $(STATIC_LIBRARY)
 
 $(DYNAMIC_LIBRARY): $(DYNAMIC_OBJS)
 	$(CC) $(SOFLAGS) -o $@ $(DYNAMIC_OBJS)
