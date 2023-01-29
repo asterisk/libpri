@@ -7674,7 +7674,7 @@ static struct q931_call *q931_get_subcall(struct q921_link *link, struct q931_ca
 	return cur;
 }
 
-int q931_receive(struct q921_link *link, q931_union *h, int len)
+int q931_receive(struct q921_link *link, q931_h *h, int len)
 {
 	q931_mh *mh;
 	struct q931_call *c;
