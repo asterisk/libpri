@@ -115,7 +115,6 @@ typedef struct q921_s {
 	u_int8_t p_f:1;			/* Poll/Final bit */
 	u_int8_t n_r:7;			/* Number Received */
 #endif
-	u_int8_t fcs[2];		/* At least an FCS */
 	u_int8_t data[0];		/* Any further data */
 } __attribute__ ((packed)) q921_s;
 
@@ -133,7 +132,6 @@ typedef struct q921_u {
 	u_int8_t p_f:1;			/* Poll/Final bit */
 	u_int8_t m3:3;			/* Top 3 modifier bits */
 #endif
-	u_int8_t fcs[2];		/* At least an FCS */
 	u_int8_t data[0];		/* Any further data */
 } __attribute__ ((packed)) q921_u;
 
@@ -151,7 +149,6 @@ typedef struct q921_i {
 	u_int8_t p_f:1;			/* Poll/Final bit */	
 	u_int8_t n_r:7;			/* Number received */
 #endif
-	u_int8_t fcs[2];		/* At least an FCS */
 	u_int8_t data[0];		/* Any further data */
 } q921_i;
 
