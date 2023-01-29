@@ -7704,8 +7704,8 @@ int q931_receive(struct q921_link *link, q931_h *h, int len)
 	}
 	switch (h->pd) {
 	case MAINTENANCE_PROTOCOL_DISCRIMINATOR_1:
-	case MAINTENANCE_PROTOCOL_DISCRIMINATOR_2: 
-	        if (!ctrl->service_message_support) {
+	case MAINTENANCE_PROTOCOL_DISCRIMINATOR_2:
+		if (!ctrl->service_message_support) {
 	 		/* Real service message support has not been enabled (and is OFF in libpri by default),
 	 		 * so we have to revert to the 'traditional' KLUDGE of changing byte 4 from a 0xf (SERVICE)
 	 		 * to a 0x7 (SERVICE ACKNOWLEDGE) */
