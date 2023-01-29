@@ -7677,6 +7677,7 @@ static struct q931_call *q931_get_subcall(struct q921_link *link, struct q931_ca
 int q931_receive(struct q921_link *link, q931_h *h, int len)
 {
 	q931_mh *mh;
+	q931_union h_union = h;
 	struct q931_call *c;
 	struct pri *ctrl;
 	q931_ie *ie;
@@ -7710,7 +7711,7 @@ int q931_receive(struct q921_link *link, q931_h *h, int len)
 	 		/* This is the weird maintenance stuff.  We majorly 
 	 		   KLUDGE this by changing byte 4 from a 0xf (SERVICE) 
 	 		   to a 0x7 (SERVICE ACKNOWLEDGE) */
-	     ((q931_union) h)->raw[h->crlen + 2] -= 0x8;
+	                h_union->raw[h->crlen + 2] -= 0x8;
 			q931_xmit(link, h, len, 1, 0);
 			return 0;
 		}
