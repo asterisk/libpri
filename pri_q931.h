@@ -50,8 +50,8 @@ typedef struct q931_h {
 } __attribute__ ((packed)) q931_h;
 
 typedef union {
-  unsigned char raw[0];
-  q931_h *h;
+	unsigned char raw[0];
+	q931_h *h;
 } q931_union;
   
 /* Message type header */
