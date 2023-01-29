@@ -37,7 +37,6 @@ typedef enum q931_mode {
 } q931_mode;
 
 typedef struct q931_h {
-	unsigned char raw[0];
 	u_int8_t pd;		/* Protocol Discriminator */
 #if __BYTE_ORDER == __BIG_ENDIAN
 	u_int8_t x0:4;
@@ -50,7 +49,11 @@ typedef struct q931_h {
 	u_int8_t crv[3];/*!< Call reference value */
 } __attribute__ ((packed)) q931_h;
 
-
+typedef union {
+	unsigned char raw[0];
+	q931_h *h;
+} q931_union;
+  
 /* Message type header */
 typedef struct q931_mh {
 #if __BYTE_ORDER == __BIG_ENDIAN
