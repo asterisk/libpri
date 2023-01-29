@@ -789,7 +789,7 @@ static int q921_send_queued_iframes(struct q921_link *link)
 			 * Also dump the Q.931 part only once instead of for every
 			 * retransmission.
 			 */
-		  q931_dump(ctrl, link->tei, (q931_h *) f->h.data, f->len - 4, 1);
+			q931_dump(ctrl, link->tei, (q931_h *) f->h.data, f->len - 4, 1);
 		}
 		f->status = Q921_TX_FRAME_SENT;
 	}
