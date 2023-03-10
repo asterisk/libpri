@@ -70,7 +70,7 @@ DYNAMIC_OBJS= \
 	$(STATIC_OBJS)
 CFLAGS ?= -g
 CFLAGS += $(CPPFLAGS)
-CFLAGS += -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes
+CFLAGS += -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -Wno-zero-length-bounds -Wno-stringop-overflow
 CFLAGS += -fPIC $(ALERTING) $(LIBPRI_OPT) $(COVERAGE_CFLAGS)
 INSTALL_PREFIX=$(DESTDIR)
 INSTALL_BASE=/usr
