@@ -10201,7 +10201,7 @@ void q931_dl_event(struct q921_link *link, enum Q931_DL_EVENT event)
 						call->cr, call->channelno, call->ourcallstate,
 						q931_call_state_str(call->ourcallstate));
 				}
-				if (cur->outboundbroadcast) {
+				if (cur->outboundbroadcast && call != q931_find_winning_call(call)) {
 					/* Simply destroy non-winning subcalls. */
 					q931_destroycall(ctrl, call);
 					continue;
