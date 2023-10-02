@@ -4451,6 +4451,7 @@ void q931_init_call_record(struct q921_link *link, struct q931_call *call, int c
 	q931_party_id_init(&call->remote_id);
 	q931_party_number_init(&call->ani);
 	q931_party_redirecting_init(&call->redirecting);
+	call->retrans_cache.valid = 0;
 
 	/* The call is now attached to whoever called us */
 	ctrl = link->ctrl;
@@ -5310,6 +5311,20 @@ static int send_message(struct pri *ctrl, q931_call *call, int msgtype, int ies[
 			"Call w/ cref:%d is not associated with a link.  TEI removed due to error conditions?\n",
 			call->cr);
 		return -1;
+	}
+
+	/* Message retransmission cache */
+	if (msgtype == Q931_SETUP || msgtype == Q931_RELEASE) {
+		if (call->retrans_cache.valid && call->retrans_cache.msgtype == msgtype) {
+			/* Restore User-user information */
+			libpri_copy_string(call->useruserinfo, call->retrans_cache.useruserinfo, sizeof(call->useruserinfo));
+		} else {
+			/* Update cache with new message information */
+			call->retrans_cache.msgtype = msgtype;
+			/* Store useruserinfo: q931_call useruserinfo field is ephemeral, cleared as soon as transmitted */
+			libpri_copy_string(call->retrans_cache.useruserinfo, call->useruserinfo, sizeof(call->retrans_cache.useruserinfo));
+			call->retrans_cache.valid = 1;
+		}
 	}
 
 	memset(buf, 0, sizeof(buf));

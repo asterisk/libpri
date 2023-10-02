@@ -675,6 +675,15 @@ struct q931_call {
 		/*! Encoded RESTART channel id. */
 		int channel;
 	} restart_tx;
+	/*! Message retransmission cache */
+	struct {
+		/*! Cache status: set valid as soon as filled in */
+		int valid;
+		/*! Sent message type */
+		int msgtype;
+		/*! User-user information */
+		char useruserinfo[256];
+	} retrans_cache;
 };
 
 enum CC_STATES {
